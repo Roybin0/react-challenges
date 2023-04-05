@@ -10,6 +10,7 @@ export class Content extends Component {
 
         this.state = {
             isLoaded: false,
+            posts: [], 
         }
     }
 
@@ -20,6 +21,20 @@ export class Content extends Component {
                 isLoaded: true,
             })
         }, 2000)
+        this.setState({
+            posts: savedPosts,
+        })
+    }
+
+    handleChange = (event) => {
+        const name = event.target.value.toLowerCase();
+        console.log(name)
+        const filteredPosts = savedPosts.filter(post => {
+            return post.name.toLowerCase().includes(name)
+        })
+        this.setState({
+            posts: filteredPosts
+        })
     }
 
     render() {
@@ -27,10 +42,19 @@ export class Content extends Component {
             <div>
                 <div className={css.TitleBar}>
                     <h1>My Posts</h1>
+                    <form>
+                        <label>Search:</label>
+                        <input 
+                            type='search' 
+                            id='searchInput' 
+                            onChange={(event) => this.handleChange(event)}
+                        />
+                        <h4>Posts found: {this.state.posts.length}</h4>
+                    </form>
                 </div>
                 {this.state.isLoaded ? (
                     <div className={css.SearchResults}>
-                        < PostItem posts={savedPosts} />
+                        < PostItem posts={this.state.posts} />
                     </div>
                 ) : < Loader />
                 }
